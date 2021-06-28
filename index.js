@@ -1,3 +1,9 @@
+/*
+    Author:         Srdan Ristic
+    Date:           06/27/2021
+    Description:    Indoor Soccer Parser
+*/
+
 const cheerio = require('cheerio');
 const got = require('got');
 const nodemailer = require('nodemailer');
@@ -91,14 +97,14 @@ got(url).then(response => {
             service: 'Yahoo',
             secure: false,
             auth: {
-              user: 'spam@rocketmail.com', // my spam email
+              user: 'srgabg@rocketmail.com', // my spam email
               pass: '' // add password
             }
             // logger: 'true'
           });
           
           var mailOptions = {
-            from: 'spam@rocketmail.com', // my spam email
+            from: 'srgabg@rocketmail.com', // my spam email
             to: email_list, // recipients
             subject: 'Shreveport Indoor Soccer Schedule',
             text: body
@@ -111,6 +117,39 @@ got(url).then(response => {
               console.log('Email sent: ' + info.response);
             }
           });
+    }
+
+    function getDate(addDays) {
+        var datetime = new Date();
+        if (addDays !== '' && addDays !== undefined) {
+            datetime.setDate(datetime.getDate() + addDays)
+        }
+        var month = datetime.getMonth() + 1; //months from 1-12
+        var day = datetime.getDate();
+        var year = datetime.getFullYear();
+        return year + "/" + month + "/" + day;
+    }
+
+    function parseDate(date) {
+        var datetime = new Date();
+        var year = datetime.getUTCFullYear();
+        var justMonth = date.substring(
+            date.lastIndexOf("-") + 1,
+            date.lastIndexOf(" ")
+        );
+        var justDay = date.substring(
+            date.lastIndexOf(" ") + 1,
+            date.length
+        );
+
+        var result = year + '/';
+        $(months).each(function(i, element) {
+            if (element.month === justMonth) {
+                result += element.monthNum + '/';
+            }
+        })
+        result += justDay
+        return result;
     }
 
     function processMyTeam() {
@@ -154,40 +193,6 @@ got(url).then(response => {
             sendEmail(emailbody)
         }
     }
-
-    function getDate(addDays) {
-        var datetime = new Date();
-        if (addDays !== '' && addDays !== undefined) {
-            datetime.setDate(datetime.getDate() + addDays)
-        }
-        var month = datetime.getMonth() + 1; //months from 1-12
-        var day = datetime.getDate();
-        var year = datetime.getFullYear();
-        return year + "/" + month + "/" + day;
-    }
-
-    function parseDate(date) {
-        var datetime = new Date();
-        var year = datetime.getUTCFullYear();
-        var justMonth = date.substring(
-            date.lastIndexOf("-") + 1,
-            date.lastIndexOf(" ")
-        );
-        var justDay = date.substring(
-            date.lastIndexOf(" ") + 1,
-            date.length
-        );
-
-        var result = year + '/';
-        $(months).each(function(i, element) {
-            if (element.month === justMonth) {
-                result += element.monthNum + '/';
-            }
-        })
-        result += justDay
-        return result;
-    }
-    
 }).catch(err => {
     console.log(err);
 });
