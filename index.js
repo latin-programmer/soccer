@@ -106,7 +106,7 @@ got(url).then(response => {
           var mailOptions = {
             from: 'srgabg@rocketmail.com', // my spam email
             to: email_list, // recipients
-            subject: 'Shreveport Indoor Soccer Schedule',
+            subject: 'Shreveport Indoor Soccer Notification',
             text: body
           };
           
